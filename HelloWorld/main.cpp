@@ -1,6 +1,13 @@
-#include <iostream>
+#include <stdio.h>
+#include <time.h>
 
 int main()
 {
-    std::cout << "Hello,World!" << std::endl;
+    int i = !time(NULL);
+
+    if (!i)
+        puts("No optimization!");
+
+    if (!__builtin_expect(i,0))
+        puts("Weight branch by '__builtin_expect' instruction!");
 }
