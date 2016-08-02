@@ -1,13 +1,12 @@
 #include <iostream>
 
 struct B { B(char c): m(c){} char m; };
-struct D : B { using B::B; /* implicitly declares D(char) */ };
+B return_type_conversion(char c){ return c; }
 
 int main()
 {
-    B b('B');
+    B b = return_type_conversion('B');
     std::cout << b.m << std::endl;
 
-    D d('D');
-    std::cout << d.m << std::endl;
+    std::cout << return_type_conversion('T').m << std::endl;
 }
