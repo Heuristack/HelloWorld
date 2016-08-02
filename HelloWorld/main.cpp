@@ -1,29 +1,27 @@
 #include <iostream>
 
-using namespace std;
-
-class Functor {
-    char * statement = nullptr;
-public:
-    inline Functor & operator() (char * s = nullptr);
-    friend ostream & operator<< (ostream & s, Functor & f);
-};
-
-Functor & Functor::operator() (char * s)
+namespace Name
 {
-    statement = s;
-    return *this;
-}
+    namespace Old
+    {
+        const char * f(){ return "old"; }
+    }
 
-ostream & operator<< (ostream & s, Functor & f)
-{
-    s << f.statement;
-    return s;
+    inline
+    namespace New
+    {
+        const char * f(){ return "new"; }
+    }
 }
 
 int main()
 {
-    Functor object;
-    char s[] = "Hello,World!";
-    cout << object(s) << endl;
+    std::cout << Name::Old::f() << std::endl;
+    std::cout << Name::New::f() << std::endl;
+
+    std::cout << Name::f() << std::endl;
+
+    using namespace Name;
+    std::cout << f() << std::endl;
+
 }
