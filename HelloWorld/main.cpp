@@ -1,9 +1,11 @@
 #include <iostream>
-#include <thread>
+#include <vector>
+#include <algorithm>
 
-int main(){
-    std::set_terminate([](void){ std::cout << "do terminate!" << std::endl; });
-    auto f = std::get_terminate();
-    f();
-    std::terminate();
+int main()
+{
+    std::vector<int> indices(10);
+    int count = 0;
+    std::generate(indices.begin(), indices.end(), [&count]{ return count++; });
+    std::for_each(indices.begin(), indices.end(), [](int element){ std::cout << element << std::endl; });
 }
