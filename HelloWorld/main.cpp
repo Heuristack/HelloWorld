@@ -1,12 +1,3 @@
-#include <iostream>
 
-struct B { B(char c): m(c){} char m; };
-B return_type_conversion(char c){ return c; }
-
-int main()
-{
-    B b = return_type_conversion('B');
-    std::cout << b.m << std::endl;
-
-    std::cout << return_type_conversion('T').m << std::endl;
-}
+constexpr int const_expression_function(int n){ return n; }
+int main(){ constexpr int n = const_expression_function(100); return n; }
