@@ -1,3 +1,9 @@
+#include <iostream>
+#include <thread>
 
-constexpr int const_expression_function(int n){ return n; }
-int main(){ constexpr int n = const_expression_function(100); return n; }
+int main(){
+    std::set_terminate([](void){ std::cout << "do terminate!" << std::endl; });
+    auto f = std::get_terminate();
+    f();
+    std::terminate();
+}
