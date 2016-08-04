@@ -1,23 +1,10 @@
 #include <iostream>
 
-const char * return_const_pointer(int n = 0)
+int main()
 {
-    char const * s = nullptr;
-    switch(n) {
-        case 1:
-            s = "Hello,World!";
-            break;
-        case 2:
-            s = "GoodBye!";
-            break;
-        default:
-            s = " ";
-            break;
-    }
+    char s[] = "Hello,World!";
+    char const & r = s[0];
+    r = 'R';
 
-//  char * const t = nullptr;
-//  t = "can't not change!";
-    return s;
+    std::cout << r << std::endl;
 }
-
-int main(){ std::cout << return_const_pointer(1) << return_const_pointer() << return_const_pointer(2) << std::endl; }
