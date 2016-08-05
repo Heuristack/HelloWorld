@@ -5,16 +5,18 @@ using namespace std;
 
 int main()
 {
-    cout << chrono::system_clock::period::num << endl;
-    cout << chrono::system_clock::period::den << endl;
-    cout << boolalpha << chrono::system_clock::is_steady << endl;
 
-    cout << chrono::high_resolution_clock::period::num << endl;
-    cout << chrono::high_resolution_clock::period::den << endl;
-    cout << boolalpha << chrono::high_resolution_clock::is_steady << endl;
+    const char * p = "Hello,World!";
+    string str(p);
 
-    cout << chrono::steady_clock::period::num << endl;
-    cout << chrono::steady_clock::period::den << endl;
-    cout << boolalpha << chrono::steady_clock::is_steady << endl;
+    chrono::time_point<chrono::high_resolution_clock> s, e;
+    s = chrono::high_resolution_clock::now();
 
+    for (int i = 0; i < 10000000; i++) for (const auto & c : str) if (c == 'A');
+    for (int i = 0; i < 10000000; i++) for (auto c : str) if (c == 'A');
+
+    e = chrono::high_resolution_clock::now();
+    chrono::duration<double> d = e - s;
+
+    cout << d.count() << endl;
 }
