@@ -1,13 +1,13 @@
-#include <string>
-#include <tuple>
+#include <boost/asio.hpp>
 #include <iostream>
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 int main()
 {
-    std::tuple<std::string, int> t {"Hello,World!", 1};
-    auto p = std::make_tuple("Hello,World!", 2);
+    boost::asio::io_service service;
+    boost::asio::deadline_timer timer(service, boost::posix_time::seconds(5));
+    timer.wait();
+    std::cout << "time up!" << std::endl;
 
-    auto x = [=](std::tuple<std::string, int> t){ std::cout << "(\"" << std::get<0>(t) << "\", " << std::get<1>(t) << ")" << std::endl; };
-    x(t);
-    x(p);
+    return 0;
 }
