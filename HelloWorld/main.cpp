@@ -1,15 +1,20 @@
-#include <cstring>
-#include <cstdio>
+#include <unordered_map>
+#include <map>
+#include <string>
+#include <iostream>
+
+using namespace std;
 
 int main()
 {
-    const char s[] = "Hello,World!";
-    const char * p = "Hello,World!";
 
-    printf("size: %d\n", sizeof(s));
-    printf("length: %d\n", strlen(s));
+    map<string, int> m { {"Dijkstra",1972}, {"Scott",1976}, {"Wilkes",1967}, {"Hamming",1968} };
+    m["Ritchie"] = 1983;
+    for (auto x : m) cout << '{' << x.first << ',' << x.second << '}';
+    cout << endl;
 
-    printf("size: %d\n", sizeof(p));
-    printf("length: %d\n", strlen(p));
-
+    unordered_map<string, int> um { {"Dijkstra",1972}, {"Scott",1976}, {"Wilkes",1967}, {"Hamming",1968} };
+    um["Ritchie"] = 1983;
+    for (auto x : um) cout << '{' << x.first << ',' << x.second << '}';
+    cout << endl;
 }
