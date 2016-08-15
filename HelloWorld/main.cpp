@@ -1,12 +1,13 @@
-#include <forward_list>
-#include <iterator>
 #include <string>
+#include <tuple>
 #include <iostream>
-
-using namespace std;
 
 int main()
 {
-    forward_list<string> list { "Hello", "Forward", "List", "Iterator" };
-    for (forward_list<string>::iterator i = list.begin(); i != list.end(); i++) cout << *i << endl;
+    std::tuple<std::string, int> t {"Hello,World!", 1};
+    auto p = std::make_tuple("Hello,World!", 2);
+
+    auto x = [=](std::tuple<std::string, int> t){ std::cout << "(\"" << std::get<0>(t) << "\", " << std::get<1>(t) << ")" << std::endl; };
+    x(t);
+    x(p);
 }
