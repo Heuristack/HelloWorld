@@ -1,8 +1,12 @@
-#include <llvm/ADT/StringRef.h>
-#include <iostream>
+#include <dispatch/dispatch.h>
+#include <stdio.h>
 
 int main()
 {
-    llvm::StringRef s("Hello,World!");
-    std::cout << s.data() << std::endl;
+    dispatch_queue_t main_q = dispatch_get_main_queue();
+
+    dispatch_async(main_q, ^{ printf("Hello,World!"); });
+
+    dispatch_main();
+    return 0;
 }
