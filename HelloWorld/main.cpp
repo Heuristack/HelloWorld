@@ -1,12 +1,17 @@
-#include <dispatch/dispatch.h>
-#include <stdio.h>
+#include <tbb/tbb.h>
+#include <iostream>
 
 int main()
 {
-    dispatch_queue_t main_q = dispatch_get_main_queue();
+    class T : public tbb::task {
+        public:
+        tbb::task * execute(){
+            std::cout << "Hello, World!" << std::endl;
+            return nullptr;
+        }
+    };
 
-    dispatch_async(main_q, ^{ printf("Hello,World!"); });
-
-    dispatch_main();
-    return 0;
+    tbb::task_scheduler_init init(tbb::task_scheduler_init::automatic);
+    T & t = *new(tbb::task::allocate_root())T();
+    tbb::task::spawn_root_and_wait(t);
 }
