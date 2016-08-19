@@ -1,24 +1,14 @@
 #include <iostream>
-#include <thread>
-#include <atomic>
-
-std::atomic<bool> ready(false);
-
-void count1m(int id)
-{
-    while(!ready){
-        std::this_thread::yield();
-    }
-    for (volatile int i = 0; i < 1000000; i++){}
-    std::cout << id;
-}
+#include <string>
+#include <memory>
 
 int main()
 {
-    std::thread threads[10];
-    for (int i = 0; i < 10; i++) threads[i] = std::thread(count1m,i);
-    ready = true;                       // go!
-    for (auto & t : threads) t.join();
-    std::cout << std::endl;
-    return 0;
+    struct T {
+        std::string s_;
+        int n_;
+        T(const char * s, int n): s_(s), n_(n) {}
+    };
+
+    std::cout << std::make_unique<T>("Hello,World!", 8848)->s_ << std::endl;
 }
