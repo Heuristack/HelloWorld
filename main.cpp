@@ -1,21 +1,16 @@
 #include <iostream>
-#include <random>
-#include <map>
 
-int generate_uniform_integers(int a, int b)
+bool* toggle(bool doors[], int num, int person)
 {
-    std::random_device dev;
-    std::uniform_int_distribution<int> dist(a, b);
-    return dist(dev);
+    for (int i = 1; i <= num; i += person)
+        doors[i] = !doors[i];
+    return doors;
 }
 
 int main()
 {
-    std::map<int, int> map;
-    for (int i = 0; i < 200; i++)
-        ++map[generate_uniform_integers(0, 9)];
-
-    for (std::map<int,int>::iterator i = map.begin(); i != map.end(); i++)
-        std::cout << i->first << ": " << std::string(i->second, '*') << std::endl;
+    constexpr int num = 500;
+    bool doors[num+1] = {};
+    for (int i = 1; i <= num; i++) toggle(doors, num, i);
+    for (int i = 1; i <= num; i++) if (doors[i]) std::cout << i << std::endl;
 }
-
