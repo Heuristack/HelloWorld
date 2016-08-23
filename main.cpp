@@ -1,15 +1,21 @@
 #include <iostream>
-#include <cmath>
+#include <random>
+#include <map>
+
+int generate_uniform_integers(int a, int b)
+{
+    std::random_device dev;
+    std::uniform_int_distribution<int> dist(a, b);
+    return dist(dev);
+}
 
 int main()
 {
-    double not_a_number = NAN;
-    double double_precision_floating_point_number = INFINITY;
+    std::map<int, int> map;
+    for (int i = 0; i < 200; i++)
+        ++map[generate_uniform_integers(0, 9)];
 
-    std::cout << std::isnan(not_a_number) << std::endl;
-    std::cout << std::isinf(double_precision_floating_point_number) << std::endl;
-    std::cout << std::isfinite(double_precision_floating_point_number) << std::endl;
-
-    std::cout << std::numeric_limits<int>::infinity() << std::endl;
-    std::cout << std::numeric_limits<double>::infinity() << std::endl;
+    for (std::map<int,int>::iterator i = map.begin(); i != map.end(); i++)
+        std::cout << i->first << ": " << std::string(i->second, '*') << std::endl;
 }
+
