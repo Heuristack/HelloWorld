@@ -5,11 +5,21 @@
 int main()
 {
     class T {
-        int m = 0;
+        int m = -100;
     public:
         T(int n):m(n){ std::cout << "C: " << m << std::endl; }
-        ~T(){ std::cout << "D: " << m << std::endl; m = 0; }
-        void f(std::unique_ptr<T>& p){ p = nullptr; std::cout << "F: " << m << std::endl; }
+        ~T(){
+            std::cout << "D: " << m << std::endl;
+            m = -1000;                                 // have effect ?
+        }
+        void f(std::unique_ptr<T>& p){
+            p = std::make_unique<T>(m+1);             // invoke destruction
+            p = std::make_unique<T>(m+2);             // invoke destruction
+            p = std::make_unique<T>(m+3);             // invoke destruction
+//          p = std::make_unique<T>(m+4);             // invoke destruction
+//          p = std::make_unique<T>(m+5);             // invoke destruction
+            std::cout << "F: " << m << std::endl;   // m is 0 not  -1
+        }
         void g(){ std::cout << "G: " << std::endl; }
         void h(){ std::cout << "H: " << m << std::endl; }
     };
@@ -24,8 +34,7 @@ int main()
     std::cout << "points to 2" << std::endl;
 
     p->f(p);
+    std::cout << "points to 3" << std::endl;
 
-    p = nullptr;
-    p->g();
     p->h();
 }
