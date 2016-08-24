@@ -10,6 +10,8 @@ int main()
         T(int n):m(n){ std::cout << "C: " << m << std::endl; }
         ~T(){ std::cout << "D: " << m << std::endl; m = 0; }
         void f(std::unique_ptr<T>& p){ p = nullptr; std::cout << "F: " << m << std::endl; }
+        void g(){ std::cout << "G: " << std::endl; }
+        void h(){ std::cout << "H: " << m << std::endl; }
     };
 
     auto p = std::make_unique<T>(1);
@@ -22,4 +24,8 @@ int main()
     std::cout << "points to 2" << std::endl;
 
     p->f(p);
+
+    p = nullptr;
+    p->g();
+    p->h();
 }
