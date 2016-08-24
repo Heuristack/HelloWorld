@@ -1,13 +1,19 @@
 #include <iostream>
 #include <string>
-#include <algorithm>
 #include <vector>
+#include <algorithm>
+#include <numeric>
 
 using namespace std;
 
 int main()
 {
-    vector<string> vector = {"Hello", "World"};
-    copy(vector.begin(), vector.end(), ostream_iterator<string>(cout, ","));
-    cout << "\b" << " " << "\b" << "!" << endl;
+    vector<int> vector(10,1);
+    for (auto & e : vector) cout << e << " "; cout << endl;
+
+    partial_sum(vector.begin(), vector.end(), vector.begin());
+    for (auto & e : vector) cout << e << " "; cout << endl;
+
+    adjacent_difference(vector.begin(), vector.end(), vector.begin());
+    for (auto & e : vector) cout << e << " "; cout << endl;
 }
