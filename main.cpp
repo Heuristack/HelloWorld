@@ -1,25 +1,50 @@
 #include <iostream>
+#include <cstdlib>
 
 namespace design_pattern
 {
-    class I {
+    using std::cout; using std::endl;
+
+    class Base {
     public:
-        virtual ~I(){}
+        virtual ~Base(){}
         virtual void succeed() = 0;
     };
 
-    class Decorator : public I {
-        I * that;
+    class Implementation : public Base {
     public:
-        Decorator(I * i): that(i) {}
-        Decorator() : Decorator(this) {}
+       ~Implementation(){ cout << "I"; }
+        Implementation(){ cout << "I"; }
+        void succeed(){ cout << " = "; }
+    };
 
-        void succeed(){ std::cout << "=" << std::endl; that->succeed(); }
+    class Decorator : public Base {
+        Base * that;
+    public:
+       ~Decorator(){ delete that; }
+        Decorator(Base * base) : that(base) {}
+        void succeed(){ that->succeed(); }
+    };
+
+    class Degree : public Decorator {
+    public:
+       ~Degree(){ cout << "D"; }
+        Degree(Base *base): Decorator(base){ cout << "D"; }
+    };
+
+    class Health : public Decorator {
+    public:
+       ~Health(){ cout << "H"; }
+        Health(Base *base): Decorator(base){ cout << "H"; }
     };
 }
 
+using namespace design_pattern;
+
 int main()
 {
-    design_pattern::Decorator decorator;
-    decorator.succeed();
+    std::atexit([](){ cout << endl; });
+    Base * pbase = new Health(new Degree(new Implementation));
+    pbase->succeed();
+    delete pbase;
 }
