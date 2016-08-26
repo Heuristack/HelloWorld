@@ -1,16 +1,25 @@
 #include <iostream>
-#include <string>
-#include <algorithm>
-#include <cassert>
 
-using namespace std;
+namespace design_pattern
+{
+    class I {
+    public:
+        virtual ~I(){}
+        virtual void succeed() = 0;
+    };
+
+    class Decorator : public I {
+        I * that;
+    public:
+        Decorator(I * i): that(i) {}
+        Decorator() : Decorator(this) {}
+
+        void succeed(){ std::cout << "=" << std::endl; that->succeed(); }
+    };
+}
 
 int main()
 {
-    string s = {"tcp://127.0.0.1:9"};
-
-    s.erase(0, s.find("://") + string("://").size());
-    s.erase(s.begin(), find(s.begin(), s.end(), ':')+1);
-
-    assert(stoi(s) == 9);
+    design_pattern::Decorator decorator;
+    decorator.succeed();
 }
