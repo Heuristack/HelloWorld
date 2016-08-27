@@ -1,48 +1,37 @@
 #include <iostream>
-#include <cstdlib>
-#include <vector>
 #include <string>
+#include <cstdlib>
 
 using namespace std;
 
-class Component {
+class Subject {
 public:
-    virtual~Component(){}
-    virtual void traverse() = 0;
+    virtual ~Subject(){ cout << "S"; }
+    virtual void execute() = 0;
 };
 
-class Leaf : public Component {
-    string state = 0;
+class RealSubject : public Subject {
+    string state;
 public:
-    Leaf(const string & s): state(s){}
-    void traverse() override { cout << state; }
+   ~RealSubject(){ cout << "R"; }
+    RealSubject(): RealSubject("default"){}
+    RealSubject(const string & s): state(s){ cout << "R"; }
+    virtual void execute() override { cout << "[" << state << "]"; }
 };
 
-class Composite : public Component {
-    vector<Component*> children;
+class Proxy : public Subject {
+    RealSubject * that;
 public:
-    void add(Component * component)
-    {
-        children.push_back(component);
-    }
-    void traverse() override
-    {
-        for (Component * component : children) component->traverse();
-    }
+   ~Proxy(){ delete that; cout << "P"; }
+    Proxy(const string & s){ cout << "P"; that = new RealSubject(s); }
+    virtual void execute() override { cout << "{"; that->execute(); cout << "}"; }
+    RealSubject * operator->(){ return that; }
 };
 
 int main()
 {
-    Composite root, node;
-    Leaf a("a"),b("b"),c("c"),d("d");
-
-    root.add(&a);
-    root.add(&node);
-
-    node.add(&b);
-    node.add(&c);
-    node.add(&d);
-
-    root.traverse();
+    Proxy proxy("surrogate");
+    proxy.execute();
+    proxy->execute();
     atexit([](){ cout << endl; });
 }
