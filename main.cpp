@@ -5,37 +5,45 @@ namespace design_pattern
 {
     using std::cout; using std::endl;
 
-    class Base {
+    class Implementation {
     public:
-        virtual ~Base(){}
-        virtual void succeed() = 0;
-    };
-
-    class Implementation : public Base {
-    public:
-       ~Implementation(){ cout << "I"; }
         Implementation(){ cout << "I"; }
-        void succeed(){ cout << " = "; }
+        virtual~Implementation(){ cout << "I"; }
+        virtual void implement() = 0;
     };
 
-    class Decorator : public Base {
-        Base * that;
+    class ConcreteImplementation : public Implementation {
     public:
-       ~Decorator(){ delete that; }
-        Decorator(Base * base) : that(base) {}
-        void succeed(){ that->succeed(); }
+       ~ConcreteImplementation(){ cout << "C"; }
+        ConcreteImplementation(){ cout << "C"; }
+        virtual void implement() override { cout << "&"; }
     };
 
-    class Degree : public Decorator {
+    class DefiniteImplementation : public Implementation {
     public:
-       ~Degree(){ cout << "D"; }
-        Degree(Base *base): Decorator(base){ cout << "D"; }
+       ~DefiniteImplementation(){ cout << "D"; }
+        DefiniteImplementation(){ cout << "D"; }
+        virtual void implement() override { cout << "*"; }
     };
 
-    class Health : public Decorator {
+    class Abstraction {
+        Implementation * implementation;    // The conceptal 'bridge', isn't it?
     public:
-       ~Health(){ cout << "H"; }
-        Health(Base *base): Decorator(base){ cout << "H"; }
+       ~Abstraction(){ cout << "A"; }
+        Abstraction(Implementation * imp): implementation(imp){ cout << "A"; }
+        virtual void operate(){ implementation->implement(); }
+    };
+
+    class DevelopedAbstraction : public Abstraction {
+    public:
+        using Abstraction::Abstraction;
+        virtual void operate() override { cout << " Developed("; Abstraction::operate(); cout << ") "; }
+    };
+
+    class OptimizedAbstraction : public Abstraction {
+    public:
+        using Abstraction::Abstraction;
+        virtual void operate() override { cout << " Optimized("; Abstraction::operate(); cout << ") "; }
     };
 }
 
@@ -43,8 +51,19 @@ using namespace design_pattern;
 
 int main()
 {
+    Implementation * concrete = new ConcreteImplementation();
+    Implementation * definite = new DefiniteImplementation();
+
+    Abstraction * optimized = new OptimizedAbstraction(concrete);
+    Abstraction * developed = new DevelopedAbstraction(definite);
+
+    optimized->operate();
+    developed->operate();
+
+    delete developed;
+    delete optimized;
+    delete definite;
+    delete concrete;
+
     std::atexit([](){ cout << endl; });
-    Base * pbase = new Health(new Degree(new Implementation));
-    pbase->succeed();
-    delete pbase;
 }
