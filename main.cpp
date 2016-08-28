@@ -1,37 +1,51 @@
 #include <iostream>
-#include <string>
 #include <cstdlib>
+#include <string>
 
 using namespace std;
 
-class Subject {
+enum class ProductType : char { None = 'N', Concrete = 'C', Definite = 'D' };
+
+class Product {
+    ProductType type = ProductType::None;
 public:
-    virtual ~Subject(){ cout << "S"; }
-    virtual void execute() = 0;
+   ~Product(){}
+    Product(): Product(ProductType::None){}
+    Product(ProductType t): type(t){}
+    ostream & puts(ostream & s){ return s << static_cast<char>(type); }
+    friend ostream & operator<<(ostream & s, Product & product){ return product.puts(s); }
 };
 
-class RealSubject : public Subject {
-    string state;
+class ConcreteProduct : public Product {
 public:
-   ~RealSubject(){ cout << "R"; }
-    RealSubject(): RealSubject("default"){}
-    RealSubject(const string & s): state(s){ cout << "R"; }
-    virtual void execute() override { cout << "[" << state << "]"; }
+    ConcreteProduct(): Product(ProductType::Concrete){}
+};
+class DefiniteProduct : public Product {
+public:
+    DefiniteProduct(): Product(ProductType::Definite){}
 };
 
-class Proxy : public Subject {
-    RealSubject * that;
+class Creator {
 public:
-   ~Proxy(){ delete that; cout << "P"; }
-    Proxy(const string & s){ cout << "P"; that = new RealSubject(s); }
-    virtual void execute() override { cout << "{"; that->execute(); cout << "}"; }
-    RealSubject * operator->(){ return that; }
+    virtual ~Creator(){}
+    virtual Product * create() = 0;     // Factory Method
+};
+
+class ConcreteCreator : public Creator {
+public:
+    virtual Product * create() override { return new ConcreteProduct; }
+};
+
+class DefiniteCreator : public Creator {
+public:
+    virtual Product * create() override { return new DefiniteProduct; }
 };
 
 int main()
 {
-    Proxy proxy("surrogate");
-    proxy.execute();
-    proxy->execute();
+    Creator * creator = new DefiniteCreator;
+    Product * product = creator->create();
+    cout << *product;
+    delete creator; delete product;
     atexit([](){ cout << endl; });
 }
