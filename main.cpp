@@ -1,29 +1,31 @@
 #include <iostream>
-#include <cstdlib>
+#include <string>
 
 using namespace std;
 
-class T {
-    int state = -1;
-public:
-    T(int s): state(s){}
-    T(const T & that_lvalue_reference): state(that_lvalue_reference.state){ cout << "C"; }
-    T(T && that_rvalue_reference): state(std::move(that_rvalue_reference.state)){ cout << "M"; }
-
-    ostream & puts(ostream & s){ return s << "state: " << state; }
-    friend ostream & operator<<(ostream & s, T & t){ return t.puts(s); }
-};
-
-T return_local_object()
+class Singleton
 {
-    T local_object(100);
-    return local_object;
-}
+    static Singleton * instanceptr;
+    string stat;
+protected:
+   ~Singleton(){ cout << "C"; }
+    Singleton(const string & s): stat(s){ cout << "C"; }
+    Singleton(): Singleton("Initialized by default!"){}
+public:
+    static Singleton & instance()
+    {
+        if (nullptr == instanceptr)
+            instanceptr = new Singleton();
+        return *instanceptr;
+    }
+    string & state(){ return stat; }
+};
+Singleton * Singleton::instanceptr = nullptr;
 
 int main()
 {
-    T this_object(100);
-    T that_object(std::move(this_object));
-    T returned_object(std::move(return_local_object()));
-    atexit([](){ cout << endl; });
+    Singleton::instance().state() = "Guarantee only one instance of Singleton exists!";
+
+    cout << Singleton::instance().state();
+    cout << endl;
 }
