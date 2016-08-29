@@ -1,51 +1,48 @@
 #include <iostream>
-#include <cstdlib>
+#include <utility>
 #include <string>
 
 using namespace std;
 
-enum class ProductType : char { None = 'N', Concrete = 'C', Definite = 'D' };
-
-class Product {
-    ProductType type = ProductType::None;
-public:
-   ~Product(){}
-    Product(): Product(ProductType::None){}
-    Product(ProductType t): type(t){}
-    ostream & puts(ostream & s){ return s << static_cast<char>(type); }
-    friend ostream & operator<<(ostream & s, Product & product){ return product.puts(s); }
-};
-
-class ConcreteProduct : public Product {
-public:
-    ConcreteProduct(): Product(ProductType::Concrete){}
-};
-class DefiniteProduct : public Product {
-public:
-    DefiniteProduct(): Product(ProductType::Definite){}
-};
-
-class Creator {
-public:
-    virtual ~Creator(){}
-    virtual Product * create() = 0;     // Factory Method
-};
-
-class ConcreteCreator : public Creator {
-public:
-    virtual Product * create() override { return new ConcreteProduct; }
-};
-
-class DefiniteCreator : public Creator {
-public:
-    virtual Product * create() override { return new DefiniteProduct; }
-};
-
 int main()
 {
-    Creator * creator = new DefiniteCreator;
-    Product * product = creator->create();
-    cout << *product;
-    delete creator; delete product;
-    atexit([](){ cout << endl; });
+    // min and max
+    cout << min({2,4,6,8,3}) << endl;
+    cout << max(nano::den, mega::num) << endl;
+    cout << minmax({10,2,4,8,1}).first << endl;
+
+    // ratio
+    typedef typename ratio<1,30>::type onethird_t;
+    cout << "1/30 := [numerator = " << onethird_t::num << "; " << "denominator = " << onethird_t::den << "]" << endl;
+    cout << "nano := [numerator = " << nano::num << "; " << "denominator = " << nano::den << "]" << endl;
+    cout << exa::num << endl;
+
+    // comparison operators deduction
+    class X {
+        string state = "0";
+    public:
+        X(const string & s): state(s){}
+        X(): X(""){}
+        bool operator==(const X & that_reference) const { return state[0] == that_reference.state[0]; }
+        bool operator <(const X & that_reference) const { return state[0]  < that_reference.state[0]; }
+        ostream & puts(ostream & s) const { return s << "X = [" << state << "]"; }
+    };
+
+    using namespace std::rel_ops;
+
+    X this_x("1");
+    X that_x("2");
+    if (this_x != that_x) cout << "!=" << endl;
+    if (this_x <= that_x) cout << "<=" << endl;
+
+    // swap
+    swap(this_x, that_x);
+    if (this_x >  that_x) cout << "> " << endl;
+    if (this_x >= that_x) cout << ">=" << endl;
+
+    this_x.puts(cout) << endl;
+    that_x.puts(cout) << endl;
+
+    min({this_x, that_x}).puts(cout) << endl;
+    max({this_x, that_x}).puts(cout) << endl;
 }
