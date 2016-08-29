@@ -3,29 +3,30 @@
 
 using namespace std;
 
-class Singleton
-{
-    static Singleton * instanceptr;
-    string stat;
-protected:
-   ~Singleton(){ cout << "C"; }
-    Singleton(const string & s): stat(s){ cout << "C"; }
-    Singleton(): Singleton("Initialized by default!"){}
+class Prototype {
 public:
-    static Singleton & instance()
-    {
-        if (nullptr == instanceptr)
-            instanceptr = new Singleton();
-        return *instanceptr;
-    }
-    string & state(){ return stat; }
+    virtual auto clone() -> Prototype * = 0;
 };
-Singleton * Singleton::instanceptr = nullptr;
+
+class ConcretePrototype : public Prototype {
+    string state;
+public:
+   ~ConcretePrototype() = default;
+    ConcretePrototype(const string & s): state(s){}
+    ConcretePrototype(): ConcretePrototype("Initialized by default!"){}
+    ConcretePrototype(const ConcretePrototype & that_reference){ state = that_reference.state; }
+    virtual auto clone() -> ConcretePrototype * override { return new ConcretePrototype(*this); }
+
+    friend ostream & operator<<(ostream & s, ConcretePrototype & o){ return s << "[" << o.state << "]"; }
+};
 
 int main()
 {
-    Singleton::instance().state() = "Guarantee only one instance of Singleton exists!";
+    ConcretePrototype prototype("prototype");
 
-    cout << Singleton::instance().state();
-    cout << endl;
+    ConcretePrototype * cloned = prototype.clone();
+    cout << *cloned << endl;
+    delete cloned;
+
+    cout << prototype << endl;
 }
