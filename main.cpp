@@ -1,24 +1,29 @@
 #include <iostream>
-#include <utility>
-#include <typeinfo>
-#include <typeindex>
+#include <cstdlib>
 
 using namespace std;
 
-template<typename T> void print_nemuric_limits()
+class T {
+    int state = -1;
+public:
+    T(int s): state(s){}
+    T(const T & that_lvalue_reference): state(that_lvalue_reference.state){ cout << "C"; }
+    T(T && that_rvalue_reference): state(std::move(that_rvalue_reference.state)){ cout << "M"; }
+
+    ostream & puts(ostream & s){ return s << "state: " << state; }
+    friend ostream & operator<<(ostream & s, T & t){ return t.puts(s); }
+};
+
+T return_local_object()
 {
-    cout << "Nemuric Limits for Type: " << typeid(T).name() << endl;
-    using limits = numeric_limits<T>;
-    cout << "digits: " << limits::digits << endl;
-    cout << "max: " << limits::max() << endl;
-    cout << "min: " << limits::min() << endl;
-    cout << "is exact: " << limits::is_exact << endl;
-    cout << "epsilon: " << limits::epsilon() << endl;
-    cout << endl;
+    T local_object(100);
+    return local_object;
 }
 
 int main()
 {
-    print_nemuric_limits<unsigned long long>();
-    print_nemuric_limits<double>();
+    T this_object(100);
+    T that_object(std::move(this_object));
+    T returned_object(std::move(return_local_object()));
+    atexit([](){ cout << endl; });
 }
