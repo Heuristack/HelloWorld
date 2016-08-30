@@ -1,24 +1,34 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
+#include <string>
+#include <memory>
 
-class T {
-    int state = -1;
-public:
-    T(int s): state(s){}
-    T(): T(0){}
-    int get () const { return state; }
-};
 using namespace std;
+
+class C {
+    int internal_state = 10;
+};
+
+class T
+{
+    int internal_state = 20;
+    string state;
+public:
+   ~T(){ cout << "D" << endl; }
+    T(): T("Initialized by default!"){}
+    T(const string & s): state(s){ cout << "C" << endl; }
+
+    const string & get(){ return state; }
+    int get_value(){ return internal_state; }
+    unique_ptr<T> clone(){ auto p = make_unique<T>(state); p->internal_state = internal_state; return p; }
+};
+
 int main()
 {
-    std::vector<T> v = {T(), T{2}};
+    unique_ptr<T> originalptr = make_unique<T>("original");
+    cout << originalptr->get() << endl;
 
-    auto last_legal_position_to_retate = v.begin() + v.size();
-    rotate(v.begin(), last_legal_position_to_retate, v.end());
-    cout << v.front().get() << endl;
+    unique_ptr<T> clonedptr = originalptr.get()->clone();
+    cout << clonedptr->get() << endl;
+    cout << clonedptr->get_value() << endl;
 
-    v.erase(v.begin());
-    cout << v.front().get() << endl;
-    cout << v[0].get() << endl;
 }
