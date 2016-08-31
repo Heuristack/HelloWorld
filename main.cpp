@@ -1,60 +1,41 @@
 #include <iostream>
+#include <iomanip>
+#include <unordered_map>
 #include <string>
+#include <iterator>
+#include <utility>
 #include <typeinfo>
 
 using namespace std;
 
-class Element {
-public:
-    virtual ~Element(){}
-    virtual void accept(class Visitor & visitor) = 0;
-    static string classname(){ return typeid(Element).name(); }
-};
+template<typename K, typename T>
+ostream & operator<<(ostream & s, pair<K,T> p){ return s << "[" << p.first << "," << p.second << "]"; }
 
-class ConcreteElement : public Element {
-public:
-    void accept(Visitor & visitor) override;
-    string classname(){ return typeid(*this).name(); }
-};
+template <typename T>
+void print_hashtable_state(T hashtable)
+{
+    cout << "size:              " << hashtable.size() << endl;
+    cout << "bucket size:       " << hashtable.bucket_count() << endl;
+    cout << "load factor:       " << hashtable.load_factor() << endl;
+    cout << "max load factor:   " << hashtable.max_load_factor() << endl;
 
-class DefiniteElement : public Element {
-public:
-    void accept(Visitor & visitor) override;
-    string classname(){ return typeid(*this).name(); }
-};
-
-class Visitor {
-public:
-    virtual void visit(ConcreteElement * element) = 0;
-    virtual void visit(DefiniteElement * element) = 0;
-};
-
-void ConcreteElement::accept(Visitor & visitor){ visitor.visit(this); }
-void DefiniteElement::accept(Visitor & visitor){ visitor.visit(this); }
-
-class ForewardVisitor : public Visitor {
-public:
-    void visit(ConcreteElement * element) override { cout << "Foreward -> " << element->classname() << endl; }
-    void visit(DefiniteElement * element) override { cout << "Foreward -> " << element->classname() << endl; }
-};
-
-class BackwardVisitor : public Visitor {
-public:
-    void visit(ConcreteElement * element) override { cout << "Backward -> " << element->classname() << endl; }
-    void visit(DefiniteElement * element) override { cout << "Backward -> " << element->classname() << endl; }
-};
+    for (unsigned int i = 0; i != hashtable.bucket_count(); i++) {
+        cout << "bucket [" << setw(2) << i << "]: ";
+        for (auto p = hashtable.begin(i); p != hashtable.end(i); p++)
+            cout << *p << " ";
+        cout << endl;
+    }
+    return;
+}
 
 int main()
 {
-    ForewardVisitor fv;
-    BackwardVisitor bv;
+    unordered_map<string, string> hashtable = {{"S","Sunday"},{"M","Monday"},{"T", "Tuesday"}};
+    print_hashtable_state(hashtable);
 
-    ConcreteElement concrete;
-    DefiniteElement definite;
+    hashtable.insert({"W","Wednesday"});
+    print_hashtable_state(hashtable);
 
-    concrete.accept(fv);
-    concrete.accept(bv);
-
-    definite.accept(fv);
-    definite.accept(bv);
+    cout << hashtable["W"] << endl;
+    if (hashtable.find("W") != hashtable.end()) cout << "Found" << endl;
 }
