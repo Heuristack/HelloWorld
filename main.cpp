@@ -8,9 +8,16 @@ unsigned fibnacci(unsigned n){ if (n < 2) return n; else return fibnacci(n-1) + 
 
 int main()
 {
-    auto s = chrono::high_resolution_clock::now();
-    fibnacci(41);
-    auto e = chrono::high_resolution_clock::now();
-    auto d = chrono::duration_cast<chrono::duration<double, ratio<1,1>>>(e - s);
-    cout << "duration: " << d.count() << "seconds" << endl;
+    using clock = chrono::high_resolution_clock;
+
+    chrono::time_point<clock> timepoint1, timepoint2;
+    chrono::nanoseconds interval;
+
+    timepoint1 = clock::now();
+    fibnacci(40);
+    timepoint2 = clock::now();
+
+    interval = timepoint2 - timepoint1;
+
+    cout << "Interval: " << interval.count() << " nanoseconds" << endl;
 }
