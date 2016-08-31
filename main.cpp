@@ -1,23 +1,59 @@
 #include <iostream>
-#include <chrono>
-#include <ratio>
+#include <random>
 
 using namespace std;
 
-unsigned fibnacci(unsigned n){ if (n < 2) return n; else return fibnacci(n-1) + fibnacci(n-2); }
+class NodeHandler {
+    NodeHandler * successor = nullptr;
+public:
+    NodeHandler() = default;
+    void set_successor(NodeHandler * s){ successor = s; }
+    NodeHandler & add(NodeHandler * s){ if (successor) successor->add(s); else successor = s; return *this; }
+    virtual void handle(int i){ if (successor) successor->handle(i); }
+};
+
+class HeadHandler : public NodeHandler {
+public:
+    void handle(int i) override {
+        if (i >= 0 && i < 10)
+            cout << "H: " << i << endl;
+        else
+            NodeHandler::handle(i);
+    }
+};
+
+class BodyHandler : public NodeHandler {
+public:
+    void handle(int i) override {
+        if (i >= 10 && i < 90)
+            cout << "B: " << i << endl;
+        else
+            NodeHandler::handle(i);
+    }
+};
+
+class TailHandler : public NodeHandler {
+public:
+    void handle(int i) override {
+        if (i >= 90 && i < 100)
+            cout << "T: " << i << endl;
+        else
+            NodeHandler::handle(i);
+    }
+};
 
 int main()
 {
-    using clock = chrono::high_resolution_clock;
+    HeadHandler head;
+    BodyHandler body;
+    TailHandler tail;
 
-    chrono::time_point<clock> timepoint1, timepoint2;
-    chrono::nanoseconds interval;
+    head.add(&body).add(&tail);     // build the responsibiliy chain
 
-    timepoint1 = clock::now();
-    fibnacci(40);
-    timepoint2 = clock::now();
+    random_device device;
+    default_random_engine engine(device());
+    uniform_int_distribution<int> distribution(0,99);
 
-    interval = timepoint2 - timepoint1;
-
-    cout << "Interval: " << interval.count() << " nanoseconds" << endl;
+    for (int i = 0; i < 20; i++)
+        head.handle(distribution(engine));
 }
