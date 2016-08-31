@@ -1,41 +1,16 @@
 #include <iostream>
-#include <iomanip>
-#include <unordered_map>
-#include <string>
-#include <iterator>
-#include <utility>
-#include <typeinfo>
+#include <chrono>
+#include <ratio>
 
 using namespace std;
 
-template<typename K, typename T>
-ostream & operator<<(ostream & s, pair<K,T> p){ return s << "[" << p.first << "," << p.second << "]"; }
-
-template <typename T>
-void print_hashtable_state(T hashtable)
-{
-    cout << "size:              " << hashtable.size() << endl;
-    cout << "bucket size:       " << hashtable.bucket_count() << endl;
-    cout << "load factor:       " << hashtable.load_factor() << endl;
-    cout << "max load factor:   " << hashtable.max_load_factor() << endl;
-
-    for (unsigned int i = 0; i != hashtable.bucket_count(); i++) {
-        cout << "bucket [" << setw(2) << i << "]: ";
-        for (auto p = hashtable.begin(i); p != hashtable.end(i); p++)
-            cout << *p << " ";
-        cout << endl;
-    }
-    return;
-}
+unsigned fibnacci(unsigned n){ if (n < 2) return n; else return fibnacci(n-1) + fibnacci(n-2); }
 
 int main()
 {
-    unordered_map<string, string> hashtable = {{"S","Sunday"},{"M","Monday"},{"T", "Tuesday"}};
-    print_hashtable_state(hashtable);
-
-    hashtable.insert({"W","Wednesday"});
-    print_hashtable_state(hashtable);
-
-    cout << hashtable["W"] << endl;
-    if (hashtable.find("W") != hashtable.end()) cout << "Found" << endl;
+    auto s = chrono::high_resolution_clock::now();
+    fibnacci(41);
+    auto e = chrono::high_resolution_clock::now();
+    auto d = chrono::duration_cast<chrono::duration<double, ratio<1,1>>>(e - s);
+    cout << "duration: " << d.count() << "seconds" << endl;
 }
