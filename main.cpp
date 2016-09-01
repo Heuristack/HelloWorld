@@ -1,19 +1,24 @@
 #include <iostream>
-#include <string>
-#include <map>
-#include <tuple>
-#include <utility>
-
+#include <functional>
 using namespace std;
+
+void passingbyreference(int & n1, int & n2, int const & n3)
+{
+    cout << "I: [" << n1 << ", " << n2 << ", " << n3 << "]" << endl;
+    ++n1;
+    ++n2;
+    cout << "I: [" << n1 << ", " << n2 << ", " << n3 << "]" << endl;
+}
 
 int main()
 {
-    map<string, string> m;
-    m.emplace(make_pair(string("a"), string("a")));
-    m.emplace(make_pair("b", "bb"));
-    m.emplace("c", "ccc");
-    m.emplace(piecewise_construct, forward_as_tuple("d"), forward_as_tuple(4, 'd')); // pair's piecewise constructor
+    int n1 = 11, n2 = 12, n3 = 13;
 
-    string key, value;
-    for (pair<string, string> p : m) { tie(key, value) = p; cout << key << ": " << value << endl; }
+    function<void()> bounded = bind(passingbyreference, n1, ref(n2), cref(n3));
+
+    n1 = 21, n2 = 22, n3 = 23;
+
+    cout << "B: [" << n1 << ", " << n2 << ", " << n3 << "]" << endl;
+    bounded();
+    cout << "A: [" << n1 << ", " << n2 << ", " << n3 << "]" << endl;
 }
