@@ -1,59 +1,32 @@
 #include <iostream>
 #include <random>
+#include <functional>
 
 using namespace std;
+using namespace std::placeholders;
 
-class NodeHandler {
-    NodeHandler * successor = nullptr;
-public:
-    NodeHandler() = default;
-    void set_successor(NodeHandler * s){ successor = s; }
-    NodeHandler & add(NodeHandler * s){ if (successor) successor->add(s); else successor = s; return *this; }
-    virtual void handle(int i){ if (successor) successor->handle(i); }
-};
-
-class HeadHandler : public NodeHandler {
-public:
-    void handle(int i) override {
-        if (i >= 0 && i < 10)
-            cout << "H: " << i << endl;
-        else
-            NodeHandler::handle(i);
-    }
-};
-
-class BodyHandler : public NodeHandler {
-public:
-    void handle(int i) override {
-        if (i >= 10 && i < 90)
-            cout << "B: " << i << endl;
-        else
-            NodeHandler::handle(i);
-    }
-};
-
-class TailHandler : public NodeHandler {
-public:
-    void handle(int i) override {
-        if (i >= 90 && i < 100)
-            cout << "T: " << i << endl;
-        else
-            NodeHandler::handle(i);
-    }
-};
+int printnum(int p, int o, int q)
+{
+    auto & s = cout;
+    s << "1: " << p << "; ";
+    s << "2: " << o << "; ";
+    s << "3: " << q << "; ";
+    return 0;
+}
 
 int main()
 {
-    HeadHandler head;
-    BodyHandler body;
-    TailHandler tail;
+    default_random_engine engine;
+    normal_distribution<double> distribution(10,4);
 
-    head.add(&body).add(&tail);     // build the responsibiliy chain
+    function<double()> normalrand = bind(distribution, engine);
 
-    random_device device;
-    default_random_engine engine(device());
-    uniform_int_distribution<int> distribution(0,99);
+    for (int i = 0; i < 10; i++) cout << normalrand() << endl;
 
-    for (int i = 0; i < 20; i++)
-        head.handle(distribution(engine));
+    printnum(1, 2, 3);
+    cout << endl;
+
+    function<int(int)> print1 = bind(printnum, _1, 0, 0);
+    print1(100);
+    cout << endl;
 }
