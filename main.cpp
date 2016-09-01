@@ -1,32 +1,20 @@
 #include <iostream>
-#include <random>
-#include <functional>
+#include <iomanip>
+#include <string>
+#include <set>
+#include <tuple>
 
 using namespace std;
-using namespace std::placeholders;
-
-int printnum(int p, int o, int q)
-{
-    auto & s = cout;
-    s << "1: " << p << "; ";
-    s << "2: " << o << "; ";
-    s << "3: " << q << "; ";
-    return 0;
-}
 
 int main()
 {
-    default_random_engine engine;
-    normal_distribution<double> distribution(10,4);
+    set<string> stringset;
+    set<string>::iterator iterator;
+    bool result;
 
-    function<double()> normalrand = bind(distribution, engine);
+    tie(iterator, ignore) = stringset.insert("Hello,World!");
+    tie(ignore, result) = stringset.insert("Hello,World!");
 
-    for (int i = 0; i < 10; i++) cout << normalrand() << endl;
-
-    printnum(1, 2, 3);
-    cout << endl;
-
-    function<int(int)> print1 = bind(printnum, _1, 0, 0);
-    print1(100);
-    cout << endl;
+    cout << *iterator << endl;
+    cout << boolalpha << result << endl;
 }
