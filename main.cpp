@@ -1,20 +1,19 @@
 #include <iostream>
-#include <iomanip>
 #include <string>
-#include <set>
+#include <map>
 #include <tuple>
+#include <utility>
 
 using namespace std;
 
 int main()
 {
-    set<string> stringset;
-    set<string>::iterator iterator;
-    bool result;
+    map<string, string> m;
+    m.emplace(make_pair(string("a"), string("a")));
+    m.emplace(make_pair("b", "bb"));
+    m.emplace("c", "ccc");
+    m.emplace(piecewise_construct, forward_as_tuple("d"), forward_as_tuple(4, 'd')); // pair's piecewise constructor
 
-    tie(iterator, ignore) = stringset.insert("Hello,World!");
-    tie(ignore, result) = stringset.insert("Hello,World!");
-
-    cout << *iterator << endl;
-    cout << boolalpha << result << endl;
+    string key, value;
+    for (pair<string, string> p : m) { tie(key, value) = p; cout << key << ": " << value << endl; }
 }
