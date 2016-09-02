@@ -2,15 +2,15 @@
 #include <string>
 using namespace std;
 
-struct object_type { void member_function(string s){ cout << s << endl; } };
+struct base_type { void member_function(string s){ cout << s << endl; } };
+struct derived_type : base_type {};
 
 int main()
 {
-    void (object_type:: * pointer_to_member_function)(string) = &object_type::member_function;
+    void (base_type:: * base_pointer_to_member_function)(string) = &base_type::member_function;
+    void (derived_type:: * derived_pointer_to_member_function)(string) = base_pointer_to_member_function;
 
-    object_type object;
-    (object.*pointer_to_member_function)("[object.]");
-
-    object_type * pointer_to_object;
-    (pointer_to_object->*pointer_to_member_function)("[pointer->]");
+    derived_type derived_object;
+    (derived_object.*derived_pointer_to_member_function)("derived");
+    (derived_object.*base_pointer_to_member_function)("base");
 }
