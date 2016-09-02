@@ -1,16 +1,34 @@
 #include <iostream>
 #include <string>
+
 using namespace std;
 
-struct base_type { void member_function(string s){ cout << s << endl; } };
-struct derived_type : base_type {};
+class Peer;
+class Command {
+    Peer * receiver;
+    void (Peer:: * request)();
+public:
+    Command(Peer * peer = nullptr, void (Peer::*operation)() = nullptr): receiver(peer), request(operation){}
+    void execute(){ if(receiver && request) (receiver->*request)(); }
+};
+
+class Peer {
+    string name;
+    Command command;
+public:
+    Peer(const string & nm, Command cmd): name(nm), command(cmd){}
+
+    void send(){ cout << name << " is sending ... " << endl; command.execute(); }
+    void recv(){ cout << name << " is recving ... " << endl; command.execute(); }
+    void work(){ cout << name << " is working ... " << endl; command.execute(); }
+
+};
 
 int main()
 {
-    void (base_type:: * base_pointer_to_member_function)(string) = &base_type::member_function;
-    void (derived_type:: * derived_pointer_to_member_function)(string) = base_pointer_to_member_function;
+    Peer F("F", Command());
+    Peer E("E", Command(&F, &Peer::recv));
+    Peer D("D", Command(&E, &Peer::work));
 
-    derived_type derived_object;
-    (derived_object.*derived_pointer_to_member_function)("derived");
-    (derived_object.*base_pointer_to_member_function)("base");
+    D.send();
 }
