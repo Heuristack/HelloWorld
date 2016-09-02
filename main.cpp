@@ -1,24 +1,29 @@
 #include <iostream>
-#include <functional>
+#include <vector>
+#include <set>
+#include <string>
+#include <algorithm>
 using namespace std;
-
-void passingbyreference(int & n1, int & n2, int const & n3)
-{
-    cout << "I: [" << n1 << ", " << n2 << ", " << n3 << "]" << endl;
-    ++n1;
-    ++n2;
-    cout << "I: [" << n1 << ", " << n2 << ", " << n3 << "]" << endl;
-}
 
 int main()
 {
-    int n1 = 11, n2 = 12, n3 = 13;
+    vector<string> dynamic_array = {"A", "B", "C", "D"};
+    set<string> binary_search_tree(dynamic_array.begin(), dynamic_array.end());
 
-    function<void()> bounded = bind(passingbyreference, n1, ref(n2), cref(n3));
+    rotate(dynamic_array.begin(), dynamic_array.begin()+1, dynamic_array.end());
+    for (string e : dynamic_array) cout << e << " ";
+    cout << endl;
 
-    n1 = 21, n2 = 22, n3 = 23;
+    rotate(dynamic_array.rbegin(), dynamic_array.rbegin()+1, dynamic_array.rend());
+    for (string e : dynamic_array) cout << e << " ";
+    cout << endl;
 
-    cout << "B: [" << n1 << ", " << n2 << ", " << n3 << "]" << endl;
-    bounded();
-    cout << "A: [" << n1 << ", " << n2 << ", " << n3 << "]" << endl;
+    vector<string>::const_iterator arraypos = find(dynamic_array.begin(), dynamic_array.end(), "C");
+    set<string>::const_iterator treepos = binary_search_tree.find("C");
+
+    dynamic_array.erase(arraypos);
+    binary_search_tree.erase(treepos);
+
+    for (string e : dynamic_array) cout << e << " "; cout << endl;
+    for (string e : binary_search_tree) cout << e << " "; cout << endl;
 }
