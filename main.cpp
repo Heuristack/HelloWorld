@@ -1,39 +1,59 @@
 #include <iostream>
-#include <list>
-#include <memory>
+#include <string>
 using namespace std;
 
-class Context {};
-
-class AbstractExpression {
+class Colleague;
+class Mediator {
 public:
-    virtual ~AbstractExpression(){}
-    virtual void interpret(Context &) = 0;
+    virtual ~Mediator(){}
+    virtual void send(string message, Colleague * colleague) = 0;
 };
 
-class TerminalExpression : public AbstractExpression
-{
+class ConcreteMediator : public Mediator {
+    Colleague * thisone = nullptr;
+    Colleague * thatone = nullptr;
 public:
-    void interpret(Context & context) override { cout << "T"; }
+    void send(string message, Colleague * colleague);
+    void registerthis(Colleague * colleague){ thisone = colleague; }
+    void registerthat(Colleague * colleague){ thatone = colleague; }
 };
-class NonterminalExpression : public AbstractExpression {
+
+class Colleague {
+protected:
+    Mediator & mediator;
 public:
-    void interpret(Context & context) override { cout << "N"; }
+    Colleague(Mediator & m): mediator(m){}
+    void send(string message){ mediator.send(message, this); }
+    virtual void notify(string message) = 0;
+};
+
+void ConcreteMediator::send(string message, Colleague * colleague) {
+    if (colleague == thisone) thatone->notify(message);
+    if (colleague == thatone) thisone->notify(message);
+}
+
+class ConcreteColleague : public Colleague {
+public:
+    using Colleague::Colleague;
+    void notify(string message){ cout << "ConcreteColleague: " << message << endl; }
+};
+
+class DefiniteColleague : public Colleague {
+public:
+    using Colleague::Colleague;
+    void notify(string message){ cout << "DefiniteColleague: " << message << endl; }
 };
 
 int main()
 {
-    Context context;
+    ConcreteMediator mediator;
+    ConcreteColleague concrete(mediator);
+    DefiniteColleague definite(mediator);
 
-    list<unique_ptr<AbstractExpression>> abstract_syntax_tree;
+    mediator.registerthis(&concrete);
+    mediator.registerthat(&definite);
 
-    abstract_syntax_tree.push_back(make_unique<TerminalExpression>());
-    abstract_syntax_tree.push_back(make_unique<NonterminalExpression>());
-    abstract_syntax_tree.push_back(make_unique<TerminalExpression>());
-    abstract_syntax_tree.push_back(make_unique<TerminalExpression>());
-
-    for (const unique_ptr<AbstractExpression> & expr : abstract_syntax_tree)
-        expr->interpret(context);
-
-    cout << endl;
+    concrete.send("Hi! How are you?");
+    definite.send("I am fine! Thank you! And you?");
+    concrete.send("I am fine too!");
 }
