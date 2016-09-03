@@ -4,6 +4,6 @@ using namespace std;
 
 int main()
 {
-    string s;
-    while (getline(cin, s, '\n')) cout << s << endl;
+    char inputbuf[0xFF];
+    while (cin.getline(inputbuf, 0xFF, '\n')) cout << string(inputbuf) << endl;
 }
