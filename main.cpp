@@ -1,80 +1,28 @@
-#include <cassert>
 #include <iostream>
-#include <list>
+#include <string>
+#include <unordered_map>
 using namespace std;
 
-struct ListNode {
-    int val;
-    ListNode * next = nullptr;
-    ListNode(int x):val(x), next(nullptr){}
-};
-
-void print_list(ListNode * l)
+int lengthOfLongestSubstring(string s)
 {
-    cout << "[";
-    for (ListNode * p = l; p != nullptr; p = p->next) {
-        cout << p->val;
-        if (p->next) cout << ",";
-    }
-    cout << "]" << endl;
-}
-
-ListNode * create_list(list<int> integer_list)
-{
-    ListNode * head = nullptr, * tail = nullptr;
-    
-    for (list<int>::iterator i = integer_list.begin(); i != integer_list.end(); ++i) {
-        int v = *i;
-        ListNode * current = new ListNode(v);
-        if (head == nullptr) { tail = current; head = tail; }
-        else {
-            assert(tail->next == nullptr);
-            tail->next = current;
-            assert(tail->next != nullptr);
-            tail = tail->next;
+    string::size_type longest = 0;
+    unordered_map<char, string::size_type> hashtable;
+    for (string::size_type p = 0, q = 0; q < s.size(); q++) {
+        string::size_type thislength = q - p + 1;
+        if (thislength >= longest) { longest = thislength; }
+        hashtable[s[q]] = q;
+        if (q + 1 < s.size()) {
+            auto i = hashtable.find(s[q+1]);
+            if (i != hashtable.end() && i->second >= p ){
+                p = i->second + 1;
+                hashtable[s[p]] = p;
+            }
         }
     }
-    print_list(head);
-    return head;
-}
-
-ListNode * add_two_numbers(ListNode * l1, ListNode * l2)
-{
-    ListNode * head = nullptr, * tail = nullptr;
-    int last_quotient = 0;
-    for (ListNode * p1 = l1, * p2 = l2; p1 != nullptr || p2 != nullptr; ) {
-        int sum = last_quotient;
-        if (p1 != nullptr) sum += p1->val;
-        if (p2 != nullptr) sum += p2->val;
-        last_quotient = sum / 10;
-        sum = sum % 10;
-        
-        ListNode * current = new ListNode(sum);
-        if (head == nullptr) { tail = current; head = tail; }
-        else {
-            assert(tail->next == nullptr);
-            tail->next = current;
-            assert(tail->next != nullptr);
-            tail = tail->next;
-        }
-        
-        if (p1 != nullptr) p1 = p1->next;
-        if (p2 != nullptr) p2 = p2->next;
-    }
-    if (last_quotient > 0) {
-        ListNode * last = new ListNode(last_quotient);
-        assert(tail->next == nullptr);
-        tail->next = last;
-        assert(tail->next != nullptr);
-        tail = tail->next;
-    }
-    return head;
+    return longest;
 }
 
 int main()
 {
-    ListNode * l1 = create_list({2,3,5,9});
-    ListNode * l2 = create_list({1,7,6});
-    
-    print_list(add_two_numbers(l1, l2));
+    cout << lengthOfLongestSubstring("aaab") << endl;
 }
