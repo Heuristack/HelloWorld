@@ -1,22 +1,25 @@
 #include <iostream>
-#include <string>
+#include <vector>
+#include <unordered_map>
 using namespace std;
 
-bool is_subsequence(string s, string t)
+vector<int> two_sum(vector<int> nums, int target)
 {
-    if (s.empty()) return true;
-    int i = 0;
-    for (int k = 0; k < t.size(); k++) {
-        if (s[i] == t[k]) i++;
-        if (i == s.size() - 1) break;
+    vector<int> two;
+    unordered_map<int, int> hashtable;
+    for (int i = 0; i < nums.size(); i++) {
+        auto r = hashtable.find(nums[i]);
+        if (r != hashtable.end()) {
+            two.push_back(r->second);
+            two.push_back(i);
+        }
+        int tomatch = target - nums[i];
+        hashtable.insert(make_pair(tomatch, i));
     }
-    if (i == s.size() - 1) return true;
-    else return false;
+    return two;
 }
 
 int main()
 {
-    cout << is_subsequence("", "ahbgdc") << endl;
-    cout << is_subsequence("abc", "ahbgdc") << endl;
-    cout << is_subsequence("axc", "ahbgdc") << endl;
+    for (auto x : two_sum({2, 7, 11, 15}, 9)) cout << x << endl;
 }
