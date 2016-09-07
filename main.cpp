@@ -1,43 +1,30 @@
 #include <iostream>
-#include <set>
+#include <forward_list>
 #include <iterator>
 using namespace std;
 
-template<typename container_type, typename iterator_type = typename container_type::iterator>
-void print(const container_type & tree)
+template<typename container_type, typename const_iterator_type = typename container_type::const_iterator>
+void print(const container_type & container)
 {
     cout << "{";
-    for (iterator_type i = tree.begin(); i != tree.end(); i++) { cout << *i; if (next(i) != tree.end()) cout << ","; }
-    cout << "}";
-    cout << endl;
-}
-
-template<typename container_type, typename iterator_type = typename container_type::iterator, typename value_type = typename container_type::value_type>
-void bounds(const container_type & tree, value_type value)
-{
-    cout << "lower bound = " << *tree.lower_bound(value) << endl;
-    cout << "upper bound = " << *tree.upper_bound(value) << endl;
-    iterator_type p, q;
-    tie(p, q) = tree.equal_range(value);
-    cout << "equal range = " << *p << ":" << *q << endl;
-
-    cout << "elements in the equal range := [" << *p << "," << *q << ") = {";
-    for (iterator_type i = tree.lower_bound(value); i != tree.upper_bound(value); i++) { cout << *i; if (next(i) != tree.upper_bound(value)) cout << ","; }
+    for (const_iterator_type i = container.begin(); i != container.end(); i++) { cout << *i; if (next(i) != container.end()) cout << ","; }
     cout << "}";
     cout << endl;
 }
 
 int main()
 {
-    set<int> tree = {1,2,4,5,6};
-    print(tree);
+    forward_list<int> linklist = {1,2,3,4,5,97,98,99};
+    print(linklist);
 
-    bounds(tree, 3);
-    bounds(tree, 5);
+    linklist.push_front(5);
+    print(linklist);
 
-    multiset<int> multitree = {1,2,2,2,4,4,5,5,5,5,6};
-    print(multitree);
+    linklist.remove(5);
+    print(linklist);
 
-    bounds(multitree, 3);
-    bounds(multitree, 5);
+    for (forward_list<int>::const_iterator pos_before = linklist.before_begin(); next(pos_before) != linklist.end(); ++pos_before) {
+        if (*next(pos_before) % 2 == 0) { linklist.erase_after(pos_before); }
+    }
+    print(linklist);
 }
