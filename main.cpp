@@ -1,81 +1,58 @@
-#define LEDA_CHECKING_OFF
+#include <functional>
+#include <algorithm>
+#include <numeric>
+#include <iterator>
+#include <vector>
+#include <map>
+#include <limits>
+#include <random>
+#include <chrono>
+#include <string>
+#include <ratio>
+#include <iostream>
+#include <iomanip>
+using namespace std;
 
-#include <LEDA/core/map.h>
-#include <LEDA/core/array.h>
-#include <LEDA/core/d_array.h>
-#include <LEDA/core/h_array.h>
+template<typename Distribution, typename Engine>
+void print_distribution_shape(Distribution d, Engine e, const string & s)
+{
+    cout << s << ": ";
+    cout << "min = " << d.min() << ", max = " << d.max() << "\n";
 
-using namespace leda;
-
-#if defined(LEDA_STD_IO_HEADERS)
-using std::cout;
-using std::endl;
-#endif
+    map<long long, int> histogram;
+    for (int i = 0; i < hecto::num * 2; ++i) ++histogram[d(e)];
+    cout << "=====\n";
+    for (const pair<int, int> & p : histogram) cout << "[" << setw(3) << p.first << "]: " << string(p.second, '*') << "\n";
+    cout << "=====\n";
+}
 
 int main()
 {
-    int N0[10000];
-    int i;
-    for(i=0; i<1000; i++) N0[i] = 0;
 
-    array<int>         A0(10000);
-    for(i=0; i<10000; i++) A0[i] = 0;
+    // limits of integers
+    using integer_limits = numeric_limits<int>;
+    cout << "limits of integers: ";
+    cout << "has infinity = " << integer_limits::has_infinity << ", ";
+    cout << "digits = " << integer_limits::digits10 << ", ";
+    cout << "min = " << numeric_limits<int>::min() << ", max = " << numeric_limits<int>::max();
+    cout << "\n";
 
-    map<int,int>       M1(0);
-    map<int,int>       M2(0,1<<18);
-    h_array<int,int>   N1(0);
-    h_array<int,int>   N2(0,1<<18);
-    d_array<int,int>   N3(0);
+    // non-deterministic random device (random number generator)
+    cout << "properties of random device: ";
+    random_device device;
+    cout << "entropy = " << device.entropy() << ", ";
+    cout << "min = " << device.min() << ", max = " << device.max();
+    cout << "\n";
+    map<int,int> device_histogram;
+    for (int i = 0; i < 10000; ++i) ++device_histogram[device()];
+    for (const pair<int, int> & p : device_histogram) if (p.first % 10 == 0 && p.first > 2 * giga::num) cout << p.first << ": " << p.second << "\n";
+    cout << "\n";
 
-    int n = read_int("n = ");
+    // random engines and distributions
+    default_random_engine engine;
+    normal_distribution<> normal(0,4);
+    print_distribution_shape(normal, engine, "Normal Distribution");
 
-    int* A = new int[n];
-
-    rand_int.set_seed(1234*n);
-    for(i=0; i<n; i++)  A[i] = rand_int(1,9999);
-
-    float T = used_time();
-    for(i=0; i<n; i++)  N0[A[i]]++;
-    cout << string("c++ array:  %.2f sec",used_time(T)) << endl;
-
-    T = used_time();
-    for(i=0; i<n; i++)  A0[A[i]]++;
-    cout << string("leda array: %.2f sec",used_time(T)) << endl;
-
-    T = used_time();
-    for(i=0; i<n; i++)  M1[A[i]]++;
-    cout << string("map:        %.2f sec",used_time(T)) << endl;
-
-    T = used_time();
-    for(i=0; i<n; i++)  M2[A[i]]++;
-    cout << string("map:        %.2f sec",used_time(T)) << endl;
-
-    T = used_time();
-    for(i=0; i<n; i++)  N1[A[i]]++;
-    cout << string("h_array:    %.2f sec",used_time(T)) << endl;
-    //cout << N1.size() <<endl;
-
-    T = used_time();
-    for(i=0; i<n; i++)  N2[A[i]]++;
-    cout << string("h_array:    %.2f sec",used_time(T)) << endl;
-
-    T = used_time();
-    for(i=0; i<n; i++)  N3[A[i]]++;
-    cout << string("d_array:    %.2f sec",used_time(T)) << endl;
-    //cout << N3.size() <<endl;
-
-    for(i=1; i<1000; i++)
-        if (A0[i] != N0[i] || M1[i] != N0[i] || M2[i] != N0[i] ||
-            N1[i] != N0[i] || N2[i] != N0[i] || N3[i] != N0[i])
-        { cout << string("%2d: ",i);
-            cout << N0[i] << " ";
-            cout << A0[i] << " ";
-            cout << M1[i] << " ";
-            cout << M2[i] << " ";
-            cout << N1[i] << " ";
-            cout << N2[i] << " ";
-            cout << N3[i] << endl;
-        }   
-    
-    return 0;
+    lognormal_distribution<> lognormal;
+    print_distribution_shape(lognormal, engine, "Log-Normal Distribution");
 }
