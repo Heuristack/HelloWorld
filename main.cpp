@@ -1,58 +1,30 @@
-#include <functional>
-#include <algorithm>
-#include <numeric>
-#include <iterator>
-#include <vector>
-#include <map>
-#include <limits>
-#include <random>
-#include <chrono>
-#include <string>
-#include <ratio>
 #include <iostream>
-#include <iomanip>
+#include <string>
+#include <system_error>
+#include <cerrno>
+#include <unistd.h>
+#include <boost/filesystem.hpp>
+#include <readline/history.h>
+#include <readline/readline.h>
+
 using namespace std;
-
-template<typename Distribution, typename Engine>
-void print_distribution_shape(Distribution d, Engine e, const string & s)
-{
-    cout << s << ": ";
-    cout << "min = " << d.min() << ", max = " << d.max() << "\n";
-
-    map<long long, int> histogram;
-    for (int i = 0; i < hecto::num * 2; ++i) ++histogram[d(e)];
-    cout << "=====\n";
-    for (const pair<int, int> & p : histogram) cout << "[" << setw(3) << p.first << "]: " << string(p.second, '*') << "\n";
-    cout << "=====\n";
-}
 
 int main()
 {
+    cout << "Current Working Directory: " << boost::filesystem::current_path() << endl;
+    int return_code = 0;
 
-    // limits of integers
-    using integer_limits = numeric_limits<int>;
-    cout << "limits of integers: ";
-    cout << "has infinity = " << integer_limits::has_infinity << ", ";
-    cout << "digits = " << integer_limits::digits10 << ", ";
-    cout << "min = " << numeric_limits<int>::min() << ", max = " << numeric_limits<int>::max();
-    cout << "\n";
+    HISTORY_STATE * state = history_get_history_state();
+    cout << "history list length = " << state->length << endl;
 
-    // non-deterministic random device (random number generator)
-    cout << "properties of random device: ";
-    random_device device;
-    cout << "entropy = " << device.entropy() << ", ";
-    cout << "min = " << device.min() << ", max = " << device.max();
-    cout << "\n";
-    map<int,int> device_histogram;
-    for (int i = 0; i < 10000; ++i) ++device_histogram[device()];
-    for (const pair<int, int> & p : device_histogram) if (p.first % 10 == 0 && p.first > 2 * giga::num) cout << p.first << ": " << p.second << "\n";
-    cout << "\n";
+    return_code = read_history(NULL);
+    cout << "read history return code = " << return_code << " : " << strerror(return_code) << endl;
 
-    // random engines and distributions
-    default_random_engine engine;
-    normal_distribution<> normal(0,4);
-    print_distribution_shape(normal, engine, "Normal Distribution");
+    return_code = add_history("Hello,World!");
+    cout << "add history entry return code = " << return_code << " : " << strerror(return_code) << endl;
 
-    lognormal_distribution<> lognormal;
-    print_distribution_shape(lognormal, engine, "Log-Normal Distribution");
+    HIST_ENTRY * entry = current_history();
+    cout << "current history line: " << entry->line << "; data: " << entry->data << endl;
+    cout << "current history offset: " << where_history() << endl;
+    cout << "history total bytes: " << history_total_bytes() << endl;
 }
