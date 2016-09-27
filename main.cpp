@@ -1,22 +1,16 @@
-#include <iostream>
-#include <memory>
-using namespace std;
 
-class Testable {
-    bool status = true;
-public:
-   ~Testable() = default;
-    Testable() = default;
-    Testable(bool s): status(s){}
-
-    explicit operator bool() const { return status; }
-};
+// Inheritance Graph = B:{E,F}:D
+struct B {};
+struct E : B {};
+struct F : B {};
+struct D : E, F {};
 
 int main()
 {
-    Testable condition(false);
-    if (!condition) cout << "!" << endl;
+    D * d = nullptr;
 
-    // only explicit conversion is permitted
-    bool converted = static_cast<bool>(condition);
+    // Ambiguous conversion from derived class 'D' to base class 'B'
+    B * ambiguous_conversion_target = (B *)d;
+
+    B * b = reinterpret_cast<B*>(d);
 }
