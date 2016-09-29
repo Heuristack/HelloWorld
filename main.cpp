@@ -1,36 +1,21 @@
-#include <iostream>
-#include <iomanip>
-#include <limits>
-#include <cmath>
-#include <ratio>
-#include <exception>
 #include <system_error>
-#include <vector>
-#include <algorithm>
-using namespace std;
+#include <ios>
+#include <future>
+#include <iostream>
 
-int m = 4;
+using std::cout;
+using std::endl;
+
 int main()
-try {
-    using limit = numeric_limits<unsigned>;
+{
+    cout << std::is_error_code_enum<std::errc>::value << endl;
 
-    cout << limit::max() << endl;
-    cout << fixed << setprecision(0) << pow(limit::radix, limit::digits) - 1 << endl;
-    cout << mega::num << endl;
-    cout << giga::num << endl;
+//  std::error_code ec(EAFNOSUPPORT, std::generic_category());
 
-    error_code ec{};
-    cout << ec.message() << endl;
+    std::error_code ec = std::make_error_code(std::errc::address_family_not_supported);
+//  std::error_code ec = std::make_error_code(std::io_errc::stream);
+//  std::error_code ec = std::make_error_code(std::future_errc::no_state);
 
-    vector<int> container = {1,2,3,4,5,6,7,8};
-    for_each(container.begin(), container.end(), [](int e){ cout << e << " "; });
-    cout << endl;
-
-    replace_if(container.begin(), container.end(), [](int e){ return e < m; }, 5);
-    m = 6;
-    replace_if(container.begin(), container.end(), [](int e){ return e < m; }, 5);
-    for_each(container.begin(), container.end(), [](int e){ cout << e << " "; });
-    cout << endl;
+    cout << "[" << ec.value() << ":" << ec.category().name() << ":\"" << ec.category().message(ec.value()) << "\":\"" << ec.message() << "\"]" << endl;
+    if (ec == std::errc::address_family_not_supported) cout << "we can compare error code against errc enumerators" << endl;
 }
-catch(exception e){ cout << e.what() << endl; }
-catch(...){}
