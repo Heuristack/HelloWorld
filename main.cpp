@@ -8,7 +8,12 @@ using std::endl;
 
 int main()
 {
-    std::vector<int> v {};
-    for (int i = 0; i < v.size() - 1; i++)
-        cout << "i = " << i << endl;
+    cout << (unsigned)-1 << endl;
+    cout << static_cast<unsigned>(-1) << endl;
+    cout << -1U << endl;
+
+    cout << UINT_MAX << endl;
+    cout << std::numeric_limits<unsigned int>::max() << endl;
+
+    cout << 0U - 1 << endl;
 }
