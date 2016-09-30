@@ -8,12 +8,7 @@ using std::endl;
 
 int main()
 {
-    cout << (unsigned)-1 << endl;
-    cout << static_cast<unsigned>(-1) << endl;
-    cout << -1U << endl;
-
-    cout << UINT_MAX << endl;
-    cout << std::numeric_limits<unsigned int>::max() << endl;
-
-    cout << 0U - 1 << endl;
+    static bool try_to_capture_me = false;
+    cout << [](){ return try_to_capture_me = true; }() << endl;
+    cout << try_to_capture_me << endl;
 }
