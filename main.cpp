@@ -1,12 +1,14 @@
 #include <iostream>
-#include <sstream>
-#include <string>
+#include <vector>
+#include <algorithm>
+#include <limits>
 
 using std::cout;
 using std::endl;
 
 int main()
 {
-    std::stringstream stream {"a,b,c"};
-    for (std::string s; std::getline(stream, s, ','); cout << s << endl);
+    std::vector<int> v {};
+    for (int i = 0; i < v.size() - 1; i++)
+        cout << "i = " << i << endl;
 }
