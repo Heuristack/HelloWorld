@@ -1,14 +1,12 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
-#include <limits>
+#include <functional>
 
 using std::cout;
 using std::endl;
 
+std::function<int (int)> make_closure_capture_nothing(){ return [](int i)->int{ return i; }; }
+
 int main()
 {
-    bool try_to_capture_me = false;
-    cout << [=]() mutable { return try_to_capture_me = true; }() << endl;
-    cout << try_to_capture_me << endl;
+    cout << make_closure_capture_nothing()(100) << endl;
 }
