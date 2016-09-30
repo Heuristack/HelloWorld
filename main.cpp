@@ -4,9 +4,15 @@
 using std::cout;
 using std::endl;
 
-std::function<int (int)> make_closure_capture_nothing(){ return [](int i)->int{ return i; }; }
+class Function {
+public:
+    Function(){}
+    int operator()(int i){ return i; }
+};
 
+int pass_function_object_to_me(Function f, int i){ return f(i); }
 int main()
 {
-    cout << make_closure_capture_nothing()(100) << endl;
+    cout << Function()(100) << endl;
+    cout << pass_function_object_to_me(Function(), 200) << endl;
 }
