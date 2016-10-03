@@ -1,6 +1,6 @@
 #include <iostream>
 #include <functional>
-#include <cstdlib>
+#include <type_traits>
 
 using std::cout;
 using std::ends;
@@ -14,21 +14,26 @@ public:
     int operator()(int i){ return i; }
 };
 
-int pass_function_object_to_me(Function f, int i){ return f(i); }
-
 int main()
 {
-    std::atexit([](){ cout << endl; });
+    // categories
+    cout << std::is_object  <Function>::value << endl;
+    cout << std::is_scalar  <Function>::value << endl;
+    cout << std::is_trivial <Function>::value << endl;
 
-    cout << Function()(100);
-    cout << pass_function_object_to_me(Function(), 200);
+    // classification
+    cout << std::is_fundamental <Function>::value << endl;
+    cout << std::is_compound    <Function>::value << endl;
 
-    Function F;
-    cout << pass_function_object_to_me(F, 400);
+    // class
+    cout << std::is_class       <Function>::value << endl;
 
-    cout << std::bind(F, 500)();
-    cout << std::bind(F, std::placeholders::_1)(600);
+    // reference
+    cout << std::is_reference   <Function>::value << endl;
 
-    std::function<int()> G = std::bind(F, 800);
-    cout << G();
+    cout << std::is_lvalue_reference<Function&>::value << endl;
+    cout << std::is_rvalue_reference<Function&>::value << endl;
+
+    cout << std::is_lvalue_reference<Function&&>::value << endl;
+    cout << std::is_rvalue_reference<Function&&>::value << endl;
 }
