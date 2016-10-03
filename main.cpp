@@ -1,56 +1,18 @@
 #include <iostream>
 #include <string>
-#include <type_traits>
+#include <regex>
 
 using std::cout;
 using std::endl;
 
-enum class WeekDay : unsigned { Sun, Mon, Tue, Wed, Thu, Fri, Sat };
-
-std::ostream & operator<<(std::ostream & os, WeekDay wd)
-{
-    std::string s;
-    switch (wd) {
-        case WeekDay::Sun:
-            s = "Sunday";
-            break;
-        case WeekDay::Mon:
-            s = "Monday";
-            break;
-        case WeekDay::Tue:
-            s = "Tuesday";
-            break;
-        case WeekDay::Wed:
-            s = "Wednesday";
-            break;
-        case WeekDay::Thu:
-            s = "Thursday";
-            break;
-        case WeekDay::Fri:
-            s = "Friday";
-            break;
-        case WeekDay::Sat:
-            s = "Saturday";
-            break;
-        default:
-            s = "Unknown";
-            break;
-    }
-    return os << s;
-}
-
 int main()
 {
-    WeekDay wd = WeekDay::Mon;
-    cout << wd << endl;
-    cout << WeekDay::Sun << endl;
+    std::string message = "|58=Client tried to increment outgoing seqNum too much (99994430)|";
+    cout << message << endl;
 
-    using WeekDay::Sat;
-    cout << Sat << endl;
+    std::regex expression(R"(seqnum)(too)", std::regex_constants::icase);
+    cout << std::regex_search(message, expression) << endl;
 
-    cout << std::is_enum<WeekDay>::value << endl;
-    cout << std::is_class<WeekDay>::value << endl;
-
-    cout << std::is_object<WeekDay>::value << endl;
-    cout << std::is_compound<WeekDay>::value << endl;
+    std::string m(message.data()+1, message.size()-1);
+    cout << m << endl;
 }
