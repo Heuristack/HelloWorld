@@ -1,39 +1,56 @@
 #include <iostream>
-#include <functional>
+#include <string>
 #include <type_traits>
 
 using std::cout;
-using std::ends;
 using std::endl;
 
-class Function {
-public:
-   ~Function(){ cout << "D" << ends; }
-    Function(){ cout << "F" << ends; }
-    Function(const Function&){ cout << "C" << ends; };
-    int operator()(int i){ return i; }
-};
+enum class WeekDay : unsigned { Sun, Mon, Tue, Wed, Thu, Fri, Sat };
+
+std::ostream & operator<<(std::ostream & os, WeekDay wd)
+{
+    std::string s;
+    switch (wd) {
+        case WeekDay::Sun:
+            s = "Sunday";
+            break;
+        case WeekDay::Mon:
+            s = "Monday";
+            break;
+        case WeekDay::Tue:
+            s = "Tuesday";
+            break;
+        case WeekDay::Wed:
+            s = "Wednesday";
+            break;
+        case WeekDay::Thu:
+            s = "Thursday";
+            break;
+        case WeekDay::Fri:
+            s = "Friday";
+            break;
+        case WeekDay::Sat:
+            s = "Saturday";
+            break;
+        default:
+            s = "Unknown";
+            break;
+    }
+    return os << s;
+}
 
 int main()
 {
-    // categories
-    cout << std::is_object  <Function>::value << endl;
-    cout << std::is_scalar  <Function>::value << endl;
-    cout << std::is_trivial <Function>::value << endl;
+    WeekDay wd = WeekDay::Mon;
+    cout << wd << endl;
+    cout << WeekDay::Sun << endl;
 
-    // classification
-    cout << std::is_fundamental <Function>::value << endl;
-    cout << std::is_compound    <Function>::value << endl;
+    using WeekDay::Sat;
+    cout << Sat << endl;
 
-    // class
-    cout << std::is_class       <Function>::value << endl;
+    cout << std::is_enum<WeekDay>::value << endl;
+    cout << std::is_class<WeekDay>::value << endl;
 
-    // reference
-    cout << std::is_reference   <Function>::value << endl;
-
-    cout << std::is_lvalue_reference<Function&>::value << endl;
-    cout << std::is_rvalue_reference<Function&>::value << endl;
-
-    cout << std::is_lvalue_reference<Function&&>::value << endl;
-    cout << std::is_rvalue_reference<Function&&>::value << endl;
+    cout << std::is_object<WeekDay>::value << endl;
+    cout << std::is_compound<WeekDay>::value << endl;
 }
