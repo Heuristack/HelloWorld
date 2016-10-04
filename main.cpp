@@ -1,8 +1,10 @@
-#include <type_traits>
-template<typename T> struct S { static_assert(std::is_destructible<T>(), "Template argument should be destructible!"); };
+#include <iostream>
+#define NDEBUG
+#include <cassert>
 
 int main()
 {
-    class C { ~C() = delete; };
-    S<C> object;
+    int a = 1, b = 1;
+    assert(a + b == 3);
+    std::cout << "Hello,World!" << std::endl;
 }
