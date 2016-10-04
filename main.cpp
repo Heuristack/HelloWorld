@@ -1,17 +1,20 @@
 #include <iostream>
+#include <type_traits>
 #include <string>
-#include <utility>
 
 using std::cout;
 using std::endl;
 
 int main()
 {
-    int m = 100, n = 200;
-    std::swap(m,n);
-    cout << m << n << endl;
+    cout << std::is_constructible<std::string>::value << endl;
+    cout << std::is_default_constructible<std::string>::value << endl;
+    cout << std::is_copy_constructible<std::string>::value << endl;
+    cout << std::is_move_constructible<std::string>::value << endl;
 
-    std::string s = "100", t = "200";
-    std::swap(s,t);
-    cout << s << t << endl;
+    cout << std::is_assignable<std::string, std::string>::value << endl;
+    cout << std::is_copy_assignable<std::string>::value << endl;
+    cout << std::is_move_assignable<std::string>::value << endl;
+
+    cout << std::is_destructible<std::string>::value << endl;
 }
