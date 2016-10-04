@@ -1,10 +1,20 @@
 #include <iostream>
-#define NDEBUG
-#include <cassert>
+using namespace std;
 
 int main()
 {
-    int a = 1, b = 1;
-    assert(a + b == 3);
-    std::cout << "Hello,World!" << std::endl;
+    cout << __cplusplus << endl;
+    cout << __clang__ << endl;
+    cout << __VERSION__ << endl;
+
+    cout << __FILE__ << endl;
+    cout << __LINE__ << endl;
+    cout << __DATE__ << endl;
+    cout << __TIME__ << endl;
+
+    cout << __STDC__ << endl;
+    cout << __STDC_HOSTED__ << endl;
+
+    cout << __APPLE__ << endl;
+    cout << __MACH__ << endl;
 }
