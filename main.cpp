@@ -1,23 +1,16 @@
 #include <iostream>
-using namespace std;
+
+enum level { warning = 2, notice = 3};
 
 int main()
 {
-    bool test = true;
-    int casenum = 2;
-    if (test) {
-        switch(casenum) {
-            case 1:
-            case 2:
-                cout << "location 1" << endl;
-                // break;
-            default:
-                cout << "location 2" << endl;
-        }
-        cout << "location 3" << endl;
+    level l;
+    l = warning;
+
+    switch (l) {
+        case warning:
+        case notice:
+            std::cout << l << std::endl;
+            break;
     }
-    else {
-        cout << "location 4" << endl;
-    }
-    cout << "location 5" << endl;
 }
