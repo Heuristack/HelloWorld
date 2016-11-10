@@ -1,10 +1,16 @@
+#include <iostream>
+#include <vector>
+#include <memory>
+
 class T {
-    int value = 0;
 public:
-    T(int v):value(v){}
-    operator int(){ return value; }
+   ~T(){ std::cout << "D" << std::endl; }
+    T(){ std::cout << "C" << std::endl; }
 };
 
-enum E : T { zero = T(0), one = T(1), ten = T(10) };
+int main()
+{
+    std::vector<std::unique_ptr<T>> v(10);
+    v.push_back(std::make_unique<T>());
+}
 
-int main(){}
